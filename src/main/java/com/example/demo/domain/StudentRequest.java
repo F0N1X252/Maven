@@ -1,24 +1,24 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 import java.time.LocalDate;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
-public class Student {
-    private String nim;
+public class StudentRequest {
+    @NotBlank(message = "Full name is required")
     private String fullName;
-    private LocalDate dob;
+
+    @NotBlank(message = "Address is required")
     private String address;
 
-    public Student() {
-    }
+    @NotBlank(message = "NIM is required")
+    private String nim;
 
-    public Student(String nim, String fullName, LocalDate dob, String address) {
-        this.nim = nim;
-        this.fullName = fullName;
-        this.dob = dob;
-        this.address = address;
-    }
+    @NotNull(message = "Date of birth is required")
+    @Past(message = "Date of birth must be in the past")
+    private LocalDate dob;
 
-    // Getters and Setters
     public String getNim() {
         return nim;
     }
