@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version> <!-- Menggunakan versi stabil terbaru sebagai contoh, sesuaikan jika perlu -->
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.3.0</version> 
+        <relativePath/> 
     </parent>
     <groupId>com.example</groupId>
     <artifactId>demo</artifactId>
@@ -27,9 +27,7 @@
         <url/>
     </scm>
     <properties>
-        <!-- Tetap menggunakan Java 25 sesuai permintaan Anda -->
         <java.version>21</java.version>
-        <!-- Menggunakan versi Lombok terbaru yang kompatibel -->
         <lombok.version>1.18.32</lombok.version>
     </properties>
     <dependencies>
@@ -74,18 +72,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- Mengonfigurasi maven-compiler-plugin dengan benar -->
+            </plugin>           
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!-- Gunakan versi plugin terbaru -->
                 <version>3.13.0</version>
                 <configuration>
-                    <!-- Menentukan versi Java -->
                     <release>${java.version}</release>
                     <annotationProcessorPaths>
-                        <!-- Pastikan annotation processor menggunakan versi Lombok yang sama -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
