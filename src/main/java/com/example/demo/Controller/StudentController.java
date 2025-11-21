@@ -35,7 +35,7 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    // Saya menghapus @ResponseStatus karena sudah ada ResponseEntity
+
     @PostMapping
     public ResponseEntity<String> createStudent(@Valid @RequestBody StudentRequest studentRequest) {
         studentService.addStudent(studentRequest);
@@ -50,7 +50,7 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body(successMessage);
     }
 
-    // --- PERUBAHAN DI SINI ---
+
     @PutMapping("/{nim}")
     public ResponseEntity<String> updateStudent(@PathVariable String nim, @Valid @RequestBody StudentRequest updatedStudentRequest) {
         studentService.updateStudent(nim, updatedStudentRequest);
