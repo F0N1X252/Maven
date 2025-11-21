@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Service.StudentService;
@@ -36,7 +35,7 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    // Saya menghapus @ResponseStatus karena sudah ada ResponseEntity
     @PostMapping
     public ResponseEntity<String> createStudent(@Valid @RequestBody StudentRequest studentRequest) {
         studentService.addStudent(studentRequest);
@@ -51,9 +50,10 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body(successMessage);
     }
 
+    // --- PERUBAHAN DI SINI ---
     @PutMapping("/{nim}")
-    public ResponseEntity<String> updateStudent(@PathVariable String nim, @RequestBody Student updatedStudent) {
-        studentService.updateStudent(nim, updatedStudent);
+    public ResponseEntity<String> updateStudent(@PathVariable String nim, @Valid @RequestBody StudentRequest updatedStudentRequest) {
+        studentService.updateStudent(nim, updatedStudentRequest);
         String successMessage = "Student data has been successfully updated.";
         return ResponseEntity.status(HttpStatus.OK).body(successMessage);
     }
@@ -66,11 +66,5 @@ public class StudentController {
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
-
-    public StudentService getStudentService() {
-        return studentService;
-    }
-
 }

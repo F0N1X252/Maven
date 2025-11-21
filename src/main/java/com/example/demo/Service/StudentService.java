@@ -1,95 +1,72 @@
 package com.example.demo.Service;
 
 import org.springframework.stereotype.Service;
-
 import com.example.demo.domain.Student;
+import com.example.demo.entity.StudentEntity;
 import com.example.demo.domain.StudentRequest;
-
-import java.util.ArrayList;
+import com.example.demo.repository.StudentRepository;
+import lombok.RequiredArgsConstructor;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
-    private final List<Student> students = new ArrayList<>();
+    private final StudentRepository studentRepository;
 
-    private static final int LENGTH_NIM = 5;
-
-    public static int getLengthNim() {
-        return LENGTH_NIM;
-    }
-
-    public StudentService() {
-
-    }
-
+    // --- Ambil semua data dari DATABASE ---
     public List<Student> getAllStudents() {
-        return students;
+        return studentRepository.findAll().stream()
+                .map(this::mapEntityToDomain)
+                .collect(Collectors.toList());
     }
 
-    public Student addStudent(StudentRequest student) {
-        String nim = (student.getNim() == null || student.getNim().isBlank()) ? generateNim() : student.getNim();
-        Student savedStudent = new Student(
-                nim,
-                student.getFullName(),
-                student.getDob(),
-                student.getAddress());
-        students.add(savedStudent);
-        return savedStudent;
+    // --- Simpan data ke DATABASE ---
+    public Student addStudent(StudentRequest request) {
+        StudentEntity entity = new StudentEntity();
+        entity.setNim(request.getNim());
+        entity.setName(request.getFullName());
+        entity.setAddress(request.getAddress());
+        entity.setDob(request.getDob());
+
+        StudentEntity savedEntity = studentRepository.save(entity);
+        return mapEntityToDomain(savedEntity);
     }
 
-    private String generateNim() {
-        int maxNim = 0;
-        for (Student student : students) {
-            String s = student.getNim();
-            if (s == null || s.isBlank()) {
-                continue;
-            }
-            try {
-                int nimNumber = Integer.parseInt(s);
-                if (nimNumber > maxNim) {
-                    maxNim = nimNumber;
-                }
-            } catch (
+    // --- Update data di DATABASE ---
+    public void updateStudent(String nim, StudentRequest request) {
+        StudentEntity existingEntity = studentRepository.findByNim(nim)
+                .orElseThrow(() -> new RuntimeException("Student with NIM " + nim + " not found."));
 
-            NumberFormatException e) {
-                // ignore non-numeric NIM values
-            }
-        }
-        int next = maxNim + 1;
-        String padded = String.format("%0" + LENGTH_NIM + "d", next);
-        return padded;
+        existingEntity.setName(request.getFullName());
+        existingEntity.setDob(request.getDob());
+        existingEntity.setAddress(request.getAddress());
+
+        studentRepository.save(existingEntity);
     }
 
-    public void updateStudent(String nim, Student updatedStudent) {
-        Student existingStudent = students.stream()
-                .filter(student -> student.getNim().equals(nim))
-                .findFirst()
-                .orElse(null);
-        if (existingStudent != null) {
-            existingStudent.setFullName(updatedStudent.getFullName());
-            existingStudent.setDob(updatedStudent.getDob());
-            existingStudent.setAddress(updatedStudent.getAddress());
-        }
-    }
-
+    // --- Hapus data dari DATABASE ---
     public void deleteStudent(String nim) {
-        Optional<Student> studentOptional = students.stream()
-                .filter(student -> student.getNim().equals(nim))
-                .findFirst();
-        if (studentOptional.isPresent()) {
-            Student studentToBeDeleted = studentOptional.get();
-            students.remove(studentToBeDeleted);
-        } else {
-            throw new RuntimeException("Student with NIM " + nim + " not found.");
-        }
+        StudentEntity entity = studentRepository.findByNim(nim)
+                .orElseThrow(() -> new RuntimeException("Student with NIM " + nim + " not found."));
+        studentRepository.delete(entity);
     }
 
+    // --- Cari data di DATABASE ---
     public Student findStudent(String nim) {
-        return students.stream()
-                .filter(student -> student.getNim().equals(nim))
-                .findFirst()
+        return studentRepository.findByNim(nim)
+                .map(this::mapEntityToDomain)
                 .orElse(null);
+    }
+
+    // Helper method untuk konversi Entity -> Domain
+    private Student mapEntityToDomain(StudentEntity entity) {
+        Student student = new Student();
+        student.setNim(entity.getNim());
+        student.setFullName(entity.getName());
+        student.setAddress(entity.getAddress());
+        student.setDob(entity.getDob()); // Tidak perlu parsing lagi!
+        return student;
     }
 }
