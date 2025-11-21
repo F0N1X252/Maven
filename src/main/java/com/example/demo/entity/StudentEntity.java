@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate; // Import LocalDate
+import java.time.LocalDate; 
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class StudentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
  
-    @Column(name = "nim", nullable = false, unique = true) // NIM harus unik
+    @Column(name = "nim", nullable = false, unique = true) 
     private String nim;
 
     @Column(name = "name", nullable = false)
@@ -30,5 +30,5 @@ public class StudentEntity {
     private String address;
 
     @Column(name = "dob", nullable = false)
-    private LocalDate dob; // UBAH TIPE DATA MENJADI LocalDate
+    private LocalDate dob; 
 }
